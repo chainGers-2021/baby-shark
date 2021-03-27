@@ -1,0 +1,44 @@
+specVersion: 0.0.1
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: PrivatePools
+    network: kovan
+    source:
+      address: "0x53B9f3A0FF843Ef20ad81a334A0905221654a90F"
+      abi: PrivatePools
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.2
+      language: wasm/assemblyscript
+      entities:
+        - OwnershipTransferred
+        - newDeposit
+        - newPoolCreated
+        - newTokenAdded
+        - newWithdrawal
+        - totalPoolDeposit
+        - totalUserDeposit
+        - verified
+      abis:
+        - name: PrivatePools
+          file: ./abis/PrivatePools.json
+      eventHandlers:
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: newDeposit(indexed string,indexed address,uint256)
+          handler: handlenewDeposit
+        - event: newPoolCreated(indexed string,indexed address,string,uint256)
+          handler: handlenewPoolCreated
+        - event: newTokenAdded(string,address,address)
+          handler: handlenewTokenAdded
+        - event: newWithdrawal(indexed string,indexed address,uint256)
+          handler: handlenewWithdrawal
+        - event: totalPoolDeposit(indexed string,uint256)
+          handler: handletotalPoolDeposit
+        - event: totalUserDeposit(indexed string,indexed address,uint256)
+          handler: handletotalUserDeposit
+        - event: verified(indexed string,address)
+          handler: handleverified
+      file: ./src/mapping.ts
