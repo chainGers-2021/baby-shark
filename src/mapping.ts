@@ -1,4 +1,5 @@
-import { BigInt } from "@graphprotocol/graph-ts"
+import { Address, BigInt, Bytes, log } from "@graphprotocol/graph-ts";
+
 import {
   PrivatePools,
   OwnershipTransferred,
@@ -8,68 +9,88 @@ import {
   newWithdrawal,
   totalPoolDeposit,
   totalUserDeposit,
-  verified
-} from "../generated/PrivatePools/PrivatePools"
-import { ExampleEntity } from "../generated/schema"
+  verified,
+} from "../generated/PrivatePools/PrivatePools";
 
-export function handleOwnershipTransferred(event: OwnershipTransferred): void {
-  // Entities can be loaded from the store using a string ID; this ID
-  // needs to be unique across all entities of the same type
-  let entity = ExampleEntity.load(event.transaction.from.toHex())
+import { Pool, User, UserPool } from "../generated/schema";
 
-  // Entities only exist after they have been saved to the store;
-  // `null` checks allow to create entities on demand
-  if (entity == null) {
-    entity = new ExampleEntity(event.transaction.from.toHex())
-
-    // Entity fields can be set using simple assignments
-    entity.count = BigInt.fromI32(0)
-  }
-
-  // BigInt and BigDecimal math are supported
-  entity.count = entity.count + BigInt.fromI32(1)
-
-  // Entity fields can be set based on event parameters
-  entity.previousOwner = event.params.previousOwner
-  entity.newOwner = event.params.newOwner
-
-  // Entities can be written to the store with `.save()`
-  entity.save()
-
-  // Note: If a handler doesn't require existing field values, it is faster
-  // _not_ to load the entity from the store. Instead, create it fresh with
-  // `new Entity(...)`, set the fields that should be updated and save the
-  // entity back to the store. Fields that were not set or unset remain
-  // unchanged, allowing for partial updates to be applied.
-
-  // It is also possible to access smart contracts from mappings. For
-  // example, the contract that has emitted the event can be connected to
-  // with:
-  //
-  // let contract = Contract.bind(event.address)
-  //
-  // The following functions can then be called on this contract to access
-  // state variables and other data:
-  //
-  // - contract.checkOwner(...)
-  // - contract.getUserDeposit(...)
-  // - contract.getVerifiedStatus(...)
-  // - contract.owner(...)
-  // - contract.poolNames(...)
-  // - contract.tokenData(...)
-  // - contract.verifyPool(...)
-}
-
+//not to implemented
 export function handlenewDeposit(event: newDeposit): void {}
 
-export function handlenewPoolCreated(event: newPoolCreated): void {}
+export function handlenewPoolCreated(event: newPoolCreated): void {
+  let pool = new Pool(event.params._poolName.toHexString());
+  pool.owner = event.params._owner.toHexString();
+  pool.symbol = event.params.symbol;
+  pool.totalDeposit = BigInt.fromI32(75);
+  pool.users = [];
+  pool.history = [];
 
+  pool.save();
+}
+
+//not to implement
 export function handlenewTokenAdded(event: newTokenAdded): void {}
 
+//not to implement
 export function handlenewWithdrawal(event: newWithdrawal): void {}
 
-export function handletotalPoolDeposit(event: totalPoolDeposit): void {}
+export function handletotalPoolDeposit(event: totalPoolDeposit): void {
+  let pool = Pool.load(event.params._poolName.toHexString());
+  pool.totalDeposit = event.params._amount;
+  let history = pool.history;
+  history.push(event.params._amount);
+  pool.history = history;
 
-export function handletotalUserDeposit(event: totalUserDeposit): void {}
+  pool.save();
+}
 
+export function handletotalUserDeposit(event: totalUserDeposit): void {
+  let user = User.load(event.params._sender.toHexString());
+  let pool = Pool.load(event.params._poolName.toHexString());
+
+  //checks if the user exists
+  if (!user) {
+    // if user doesn't exists creates a new user
+    let user = new User(event.params._sender.toHexString());
+    user.pools = [pool.id];
+    user.pools.push(pool.id);
+    user.save();
+
+    let users = pool.users;
+    users.push(user.id);
+    pool.users = users;
+    pool.save();
+  } else if (user.pools.indexOf(pool.id) === -1) {
+    // checks if the pool exists for user
+    // adds the pool for user if doesn't
+    let pools = user.pools;
+    pools.push(pool.id);
+    user.pools = pools;
+    user.save();
+  }
+
+  // loads a userpool entity for user
+  let userPoolID = createKey(event.params._sender, event.params._poolName);
+  let userPool = UserPool.load(userPoolID);
+  if (!userPool) {
+    let userPool = new UserPool(userPoolID);
+    userPool.user = event.params._sender.toHexString();
+    userPool.pool = pool.id;
+    userPool.totalDeposit = event.params._amount;
+
+    userPool.save();
+  } else {
+    userPool.totalDeposit = event.params._amount;
+    userPool.save();
+  }
+}
+
+//not to implement
 export function handleverified(event: verified): void {}
+
+const createKey = (user: Address, pool: Bytes): string => {
+  return user
+    .toHexString()
+    .concat("-")
+    .concat(pool.toHexString());
+};

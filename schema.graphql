@@ -1,6 +1,20 @@
-type ExampleEntity @entity {
+type User @entity {
   id: ID!
-  count: BigInt!
-  previousOwner: Bytes! # address
-  newOwner: Bytes! # address
+  pools: [Pool!]!
+}
+
+type Pool @entity {
+  id: ID!
+  owner: String!
+  symbol: String!
+  totalDeposit: BigInt!
+  history: [BigInt!]!
+  users: [User!]!
+}
+
+type UserPool @entity {
+  id: ID!
+  pool: Pool!
+  user: User!
+  totalDeposit: BigInt!
 }
