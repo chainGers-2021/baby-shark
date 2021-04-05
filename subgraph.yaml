@@ -2,13 +2,14 @@ specVersion: 0.0.2
 schema:
   file: ./schema.graphql
 dataSources:
+  # Private Pool Details
   - kind: ethereum/contract
     name: PrivatePools
     network: kovan
     source:
-      address: "0x53B9f3A0FF843Ef20ad81a334A0905221654a90F"
+      address: "0xe991d6184DC0195b45DFfe3dAAead91f399D5c9F"
       abi: PrivatePools
-      startBlock: 24060195
+      startBlock: 24156719
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -20,7 +21,8 @@ dataSources:
         - newTokenAdded
         - newWithdrawal
         - totalPoolDeposit
-        - totalUserDeposit
+        - totalPoolScaledDeposit
+        - totalUserScaledDeposit
         - verified
       abis:
         - name: PrivatePools
@@ -28,18 +30,128 @@ dataSources:
       eventHandlers:
         - event: OwnershipTransferred(indexed address,indexed address)
           handler: handleOwnershipTransferred
-        - event: newDeposit(indexed string,indexed address,uint256)
+        - event: newDeposit(indexed string,indexed address,uint256,uint256)
           handler: handlenewDeposit
-        - event: newPoolCreated(indexed string,indexed address,string,uint256)
+        - event: newPoolCreated(indexed string,indexed address,string,uint256,uint256)
           handler: handlenewPoolCreated
         - event: newTokenAdded(string,address,address)
           handler: handlenewTokenAdded
-        - event: newWithdrawal(indexed string,indexed address,uint256)
+        - event: newWithdrawal(indexed string,indexed address,uint256,uint256)
           handler: handlenewWithdrawal
-        - event: totalPoolDeposit(indexed string,uint256)
+        - event: totalPoolDeposit(indexed string,uint256,uint256)
           handler: handletotalPoolDeposit
-        - event: totalUserDeposit(indexed string,indexed address,uint256)
-          handler: handletotalUserDeposit
-        - event: verified(indexed string,address)
+        - event: totalPoolScaledDeposit(indexed string,uint256,uint256)
+          handler: handletotalPoolScaledDeposit
+        - event: totalUserScaledDeposit(indexed string,indexed address,uint256,uint256)
+          handler: handletotalUserScaledDeposit
+        - event: verified(indexed string,address,uint256)
           handler: handleverified
-      file: ./src/mapping.ts
+      file: ./src/PrivatePoolsMapping.ts
+
+  # Comptroller Contract Details
+  - kind: ethereum/contract
+    name: Comptroller
+    network: kovan
+    source:
+      address: "0x8D9bc3b6Ee6b7BfeAA323c1d11715e852F7767d5"
+      abi: Comptroller
+      startBlock: 24156716
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - OwnershipTransferred
+        - newTokenAdded
+      abis:
+        - name: Comptroller
+          file: ./abis/Comptroller.json
+      eventHandlers:
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: newTokenAdded(string,address,address)
+          handler: handlenewTokenAdded
+      file: ./src/ComptrollerMapping.ts
+
+  # PublicPool Contract Details
+  - kind: ethereum/contract
+    name: PublicPools
+    network: kovan
+    source:
+      address: "0xBF2214621AE6F123B801D22ba1C59bCA33bA299F"
+      abi: PublicPools
+      startBlock: 24156721
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - OwnershipTransferred
+        - newDeposit
+        - newPoolCreated
+        - newTokenAdded
+        - newWithdrawal
+        - totalPoolDeposit
+        - totalPoolScaledDeposit
+        - totalUserScaledDeposit
+        - verified
+      abis:
+        - name: PublicPools
+          file: ./abis/PublicPools.json
+      eventHandlers:
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: newDeposit(indexed string,indexed address,uint256,uint256)
+          handler: handlenewDeposit
+        - event: newPoolCreated(indexed string,indexed address,string,uint256,uint256)
+          handler: handlenewPoolCreated
+        - event: newTokenAdded(string,address,address)
+          handler: handlenewTokenAdded
+        - event: newWithdrawal(indexed string,indexed address,uint256,uint256)
+          handler: handlenewWithdrawal
+        - event: totalPoolDeposit(indexed string,uint256,uint256)
+          handler: handletotalPoolDeposit
+        - event: totalPoolScaledDeposit(indexed string,uint256,uint256)
+          handler: handletotalPoolScaledDeposit
+        - event: totalUserScaledDeposit(indexed string,indexed address,uint256,uint256)
+          handler: handletotalUserScaledDeposit
+        - event: verified(indexed string,address,uint256)
+          handler: handleverified
+      file: ./src/PublicPoolsMapping.ts
+
+  # DonationPools Contract Details
+  - kind: ethereum/contract
+    name: DonationPools
+    network: kovan
+    source:
+      address: "0xC9420621CC14BdA1B5E502584f7302bd98ff0D62"
+      abi: DonationPools
+      startBlock: 24156724
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - OwnershipTransferred
+        - newDonation
+        - newDonationWithdrawal
+        - newRecipientAdded
+        - recipientDeactivated
+        - recipientReactivated
+      abis:
+        - name: DonationPools
+          file: ./abis/DonationPools.json
+      eventHandlers:
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: newDonation(uint256,indexed string,uint256)
+          handler: handlenewDonation
+        - event: newDonationWithdrawal(indexed address,indexed string,uint256)
+          handler: handlenewDonationWithdrawal
+        - event: newRecipientAdded(indexed address,indexed string,uint256)
+          handler: handlenewRecipientAdded
+        - event: recipientDeactivated(indexed address,indexed string,uint256)
+          handler: handlerecipientDeactivated
+        - event: recipientReactivated(indexed address,indexed string,uint256)
+          handler: handlerecipientReactivated
+      file: ./src/DonationPoolsMapping.ts

@@ -260,6 +260,15 @@
     "type": "event"
   },
   {
+    "inputs": [
+      { "internalType": "string", "name": "_poolName", "type": "string" }
+    ],
+    "name": "breakPool",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "checkOwner",
     "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
@@ -270,12 +279,7 @@
     "inputs": [
       { "internalType": "string", "name": "_symbol", "type": "string" },
       { "internalType": "string", "name": "_poolName", "type": "string" },
-      { "internalType": "uint256", "name": "_targetPrice", "type": "uint256" },
-      {
-        "internalType": "address",
-        "name": "_poolAccountAddress",
-        "type": "address"
-      }
+      { "internalType": "uint256", "name": "_targetPrice", "type": "uint256" }
     ],
     "name": "createPool",
     "outputs": [],
@@ -346,15 +350,6 @@
     "inputs": [
       { "internalType": "string", "name": "_poolName", "type": "string" }
     ],
-    "name": "getVerifiedStatus",
-    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "string", "name": "_poolName", "type": "string" }
-    ],
     "name": "isPoolEmpty",
     "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
     "stateMutability": "view",
@@ -418,17 +413,6 @@
     "name": "verifyPool",
     "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "string", "name": "_poolName", "type": "string" },
-      { "internalType": "bytes32", "name": "_messageHash", "type": "bytes32" },
-      { "internalType": "bytes", "name": "_signature", "type": "bytes" }
-    ],
-    "name": "verifyPoolAccess",
-    "outputs": [],
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {

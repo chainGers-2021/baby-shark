@@ -1,20 +1,23 @@
 import { Address, BigInt, Bytes, log } from "@graphprotocol/graph-ts";
 
 import {
-  PrivatePools,
   OwnershipTransferred,
   newDeposit,
   newPoolCreated,
   newTokenAdded,
   newWithdrawal,
   totalPoolDeposit,
-  totalUserDeposit,
+  totalPoolScaledDeposit,
   verified,
+  totalUserScaledDeposit,
 } from "../generated/PrivatePools/PrivatePools";
 
 import { Pool, User, UserPool } from "../generated/schema";
 
-//not to implemented
+//not to implement
+export function handleOwnershipTransferred(event: OwnershipTransferred): void {}
+
+//not to implement
 export function handlenewDeposit(event: newDeposit): void {}
 
 export function handlenewPoolCreated(event: newPoolCreated): void {
@@ -44,7 +47,14 @@ export function handletotalPoolDeposit(event: totalPoolDeposit): void {
   pool.save();
 }
 
-export function handletotalUserDeposit(event: totalUserDeposit): void {
+//not to implement
+export function handletotalPoolScaledDeposit(
+  event: totalPoolScaledDeposit
+): void {}
+
+export function handletotalUserScaledDeposit(
+  event: totalUserScaledDeposit
+): void {
   let user = User.load(event.params._sender.toHexString());
   let pool = Pool.load(event.params._poolName.toHexString());
 
