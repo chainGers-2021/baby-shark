@@ -260,6 +260,15 @@
     "type": "event"
   },
   {
+    "inputs": [
+      { "internalType": "string", "name": "_poolName", "type": "string" }
+    ],
+    "name": "breakPool",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "checkOwner",
     "outputs": [{ "internalType": "address", "name": "", "type": "address" }],

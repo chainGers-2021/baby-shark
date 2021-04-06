@@ -24,9 +24,11 @@ export function handlenewPoolCreated(event: newPoolCreated): void {
   let pool = new Pool(event.params._poolName.toHexString());
   pool.owner = event.params._owner.toHexString();
   pool.symbol = event.params.symbol;
-  pool.totalDeposit = BigInt.fromI32(75);
+  pool.totalDeposit = BigInt.fromI32(0);
   pool.users = [];
   pool.history = [];
+  pool.timestamps = [];
+  pool.privatePool = true;
 
   pool.save();
 }
@@ -40,9 +42,14 @@ export function handlenewWithdrawal(event: newWithdrawal): void {}
 export function handletotalPoolDeposit(event: totalPoolDeposit): void {
   let pool = Pool.load(event.params._poolName.toHexString());
   pool.totalDeposit = event.params._amount;
+
   let history = pool.history;
   history.push(event.params._amount);
   pool.history = history;
+
+  let timestamps = pool.timestamps;
+  timestamps.push(event.params._timestamp);
+  pool.timestamps = timestamps;
 
   pool.save();
 }

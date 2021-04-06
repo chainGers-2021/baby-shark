@@ -5,11 +5,15 @@ type User @entity {
 
 type Pool @entity {
   id: ID!
+
   owner: String!
   symbol: String!
   totalDeposit: BigInt!
-  history: [BigInt!]!
   users: [User!]!
+
+  history: [BigInt!]!
+  timestamps: [BigInt!]!
+  privatePool: Boolean!
 }
 
 type UserPool @entity {
@@ -17,4 +21,7 @@ type UserPool @entity {
   pool: Pool!
   user: User!
   totalDeposit: BigInt!
+
+  history: [BigInt!]!
+  timestamps: [BigInt!]!
 }
