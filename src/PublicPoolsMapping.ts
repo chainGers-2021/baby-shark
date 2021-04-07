@@ -23,8 +23,8 @@ export function handlenewPoolCreated(event: newPoolCreated): void {
   pool.symbol = event.params.symbol;
   pool.totalDeposit = BigInt.fromI32(0);
   pool.users = [];
-  pool.history = [];
-  pool.timestamps = [];
+  pool.history = [BigInt.fromI32(0)];
+  pool.timestamps = [event.params._timestamp];
   pool.privatePool = false;
 
   pool.save();
@@ -64,7 +64,7 @@ export function handletotalUserScaledDeposit(
     // if user doesn't exists creates a new user
     let user = new User(event.params._sender.toHexString());
     user.pools = [pool.id];
-    user.pools.push(pool.id);
+    user.eligibleForNFT = true;
     user.save();
 
     let users = pool.users;
@@ -77,6 +77,21 @@ export function handletotalUserScaledDeposit(
     let pools = user.pools;
     pools.push(pool.id);
     user.pools = pools;
+    user.eligibleForNFT = true;
+    user.save();
+  }
+
+  if (event.params._amount.equals(BigInt.fromI32(0))) {
+    let index = user.pools.indexOf(pool.id);
+
+    let pools = user.pools;
+    pools.splice(index, 1);
+    user.pools = pools;
+
+    if (pools.length === 0) {
+      user.eligibleForNFT = false;
+    }
+
     user.save();
   }
 

@@ -1,6 +1,7 @@
 type User @entity {
   id: ID!
   pools: [Pool!]!
+  eligibleForNFT: Boolean!
 }
 
 type Pool @entity {

@@ -26,8 +26,8 @@ export function handlenewPoolCreated(event: newPoolCreated): void {
   pool.symbol = event.params.symbol;
   pool.totalDeposit = BigInt.fromI32(0);
   pool.users = [];
-  pool.history = [];
-  pool.timestamps = [];
+  pool.history = [BigInt.fromI32(0)];
+  pool.timestamps = [event.params._timestamp];
   pool.privatePool = true;
 
   pool.save();
@@ -70,19 +70,29 @@ export function handletotalUserScaledDeposit(
     // if user doesn't exists creates a new user
     let user = new User(event.params._sender.toHexString());
     user.pools = [pool.id];
-    user.pools.push(pool.id);
+    user.eligibleForNFT = true;
     user.save();
-
-    let users = pool.users;
-    users.push(user.id);
-    pool.users = users;
-    pool.save();
   } else if (user.pools.indexOf(pool.id) === -1) {
     // checks if the pool exists for user
     // adds the pool for user if doesn't
     let pools = user.pools;
     pools.push(pool.id);
     user.pools = pools;
+    user.eligibleForNFT = true;
+    user.save();
+  }
+
+  if (event.params._amount.equals(BigInt.fromI32(0))) {
+    let index = user.pools.indexOf(pool.id);
+
+    let pools = user.pools;
+    pools.splice(index, 1);
+    user.pools = pools;
+
+    if (pools.length === 0) {
+      user.eligibleForNFT = false;
+    }
+
     user.save();
   }
 
@@ -103,7 +113,14 @@ export function handletotalUserScaledDeposit(
 }
 
 //not to implement
-export function handleverified(event: verified): void {}
+export function handleverified(event: verified): void {
+  let pool = Pool.load(event.params._poolName.toHexString());
+
+  let users = pool.users;
+  users.push(event.params._sender.toHexString());
+  pool.users = users;
+  pool.save();
+}
 
 const createKey = (user: Address, pool: Bytes): string => {
   return user
