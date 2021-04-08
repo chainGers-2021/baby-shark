@@ -26,3 +26,11 @@ type UserPool @entity {
   history: [BigInt!]!
   timestamps: [BigInt!]!
 }
+
+type Symbol @entity {
+  id: ID!
+  symbol: String!
+  user: String!
+  totalDeposit: BigInt!
+  eligibleForNFT: Boolean!
+}

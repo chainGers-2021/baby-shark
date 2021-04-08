@@ -12,13 +12,38 @@ import {
   totalUserScaledDeposit,
 } from "../generated/PrivatePools/PrivatePools";
 
-import { Pool, User, UserPool } from "../generated/schema";
+import { Pool, Symbol, User, UserPool } from "../generated/schema";
 
 //not to implement
 export function handleOwnershipTransferred(event: OwnershipTransferred): void {}
 
 //not to implement
-export function handlenewDeposit(event: newDeposit): void {}
+export function handlenewDeposit(event: newDeposit): void {
+  let pool = Pool.load(event.params._poolName.toHexString());
+
+  const ID = event.params._sender
+    .toHexString()
+    .concat("-")
+    .concat(pool.symbol);
+  let symbol = Symbol.load(ID);
+
+  if (!symbol) {
+    let symbol = new Symbol(ID);
+    symbol.totalDeposit = event.params._amount;
+    symbol.symbol = pool.symbol;
+    symbol.user = event.params._sender.toHexString();
+    symbol.eligibleForNFT = true;
+
+    symbol.save();
+  } else {
+    let totalDeposit = symbol.totalDeposit;
+    totalDeposit = totalDeposit.plus(event.params._amount);
+    symbol.totalDeposit = totalDeposit;
+    symbol.eligibleForNFT = true;
+
+    symbol.save();
+  }
+}
 
 export function handlenewPoolCreated(event: newPoolCreated): void {
   let pool = new Pool(event.params._poolName.toHexString());
@@ -37,7 +62,24 @@ export function handlenewPoolCreated(event: newPoolCreated): void {
 export function handlenewTokenAdded(event: newTokenAdded): void {}
 
 //not to implement
-export function handlenewWithdrawal(event: newWithdrawal): void {}
+export function handlenewWithdrawal(event: newWithdrawal): void {
+  let pool = Pool.load(event.params._poolName.toHexString());
+  const ID = event.params._sender
+    .toHexString()
+    .concat("-")
+    .concat(pool.symbol);
+  let symbol = Symbol.load(ID);
+
+  let totalDeposit = symbol.totalDeposit;
+  totalDeposit = totalDeposit.minus(event.params._amount);
+  symbol.totalDeposit = totalDeposit;
+
+  if (totalDeposit.equals(BigInt.fromI32(0))) {
+    symbol.eligibleForNFT = false;
+  }
+
+  symbol.save();
+}
 
 export function handletotalPoolDeposit(event: totalPoolDeposit): void {
   let pool = Pool.load(event.params._poolName.toHexString());
