@@ -1,5 +1,4 @@
 import {
-  Comptroller,
   OwnershipTransferred,
   newTokenAdded,
 } from "../generated/Comptroller/Comptroller";

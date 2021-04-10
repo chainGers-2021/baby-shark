@@ -7,9 +7,9 @@ dataSources:
     name: PrivatePools
     network: kovan
     source:
-      address: "0x2F416f6A1d76Ab9dd50b61058E5eA2de379BcD8c"
+      address: "0x15400da9b82f865A1Bf8D253AA8128ffbAec5d43"
       abi: PrivatePools
-      startBlock: 24166789
+      startBlock: 24212889
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -30,21 +30,19 @@ dataSources:
       eventHandlers:
         - event: OwnershipTransferred(indexed address,indexed address)
           handler: handleOwnershipTransferred
-        - event: newDeposit(indexed string,indexed address,uint256,uint256)
+        - event: newDeposit(string,address,uint256,uint256)
           handler: handlenewDeposit
-        - event: newPoolCreated(indexed string,indexed address,string,uint256,uint256)
+        - event: newPoolCreated(string,indexed address,string,uint256,uint256)
           handler: handlenewPoolCreated
-        - event: newTokenAdded(string,address,address)
-          handler: handlenewTokenAdded
-        - event: newWithdrawal(indexed string,indexed address,uint256,uint256)
+        - event: newWithdrawal(string,indexed address,uint256,uint256)
           handler: handlenewWithdrawal
-        - event: totalPoolDeposit(indexed string,uint256,uint256)
+        - event: totalPoolDeposit(string,uint256,uint256)
           handler: handletotalPoolDeposit
-        - event: totalPoolScaledDeposit(indexed string,uint256,uint256)
+        - event: totalPoolScaledDeposit(string,uint256,uint256)
           handler: handletotalPoolScaledDeposit
-        - event: totalUserScaledDeposit(indexed string,indexed address,uint256,uint256)
+        - event: totalUserScaledDeposit(string,indexed address,uint256,uint256)
           handler: handletotalUserScaledDeposit
-        - event: verified(indexed string,address,uint256)
+        - event: verified(string,address,uint256)
           handler: handleverified
       file: ./src/PrivatePoolsMapping.ts
 
@@ -53,9 +51,9 @@ dataSources:
     name: Comptroller
     network: kovan
     source:
-      address: "0x7Ca34A16A5Cc596Ae904c0e037f1c19104E89059"
+      address: "0xf2Ad9aBa18d5Ab625023Cd78a2D84c7aF8A0e63d"
       abi: Comptroller
-      startBlock: 24166787
+      startBlock: 24212887
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -78,9 +76,9 @@ dataSources:
     name: PublicPools
     network: kovan
     source:
-      address: "0x4aEbD27e8f9c90aF79ccFcf0Da9a607f04f43df1"
+      address: "0x669665F1182A57A4182e1B63bb12E530E1388f01"
       abi: PublicPools
-      startBlock: 24166791
+      startBlock: 24212891
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -101,21 +99,19 @@ dataSources:
       eventHandlers:
         - event: OwnershipTransferred(indexed address,indexed address)
           handler: handleOwnershipTransferred
-        - event: newDeposit(indexed string,indexed address,uint256,uint256)
+        - event: newDeposit(string,address,uint256,uint256)
           handler: handlenewDeposit
-        - event: newPoolCreated(indexed string,indexed address,string,uint256,uint256)
+        - event: newPoolCreated(string,indexed address,string,uint256,uint256)
           handler: handlenewPoolCreated
-        - event: newTokenAdded(string,address,address)
-          handler: handlenewTokenAdded
-        - event: newWithdrawal(indexed string,indexed address,uint256,uint256)
+        - event: newWithdrawal(string,indexed address,uint256,uint256)
           handler: handlenewWithdrawal
-        - event: totalPoolDeposit(indexed string,uint256,uint256)
+        - event: totalPoolDeposit(string,uint256,uint256)
           handler: handletotalPoolDeposit
-        - event: totalPoolScaledDeposit(indexed string,uint256,uint256)
+        - event: totalPoolScaledDeposit(string,uint256,uint256)
           handler: handletotalPoolScaledDeposit
-        - event: totalUserScaledDeposit(indexed string,indexed address,uint256,uint256)
+        - event: totalUserScaledDeposit(string,indexed address,uint256,uint256)
           handler: handletotalUserScaledDeposit
-        - event: verified(indexed string,address,uint256)
+        - event: verified(string,address,uint256)
           handler: handleverified
       file: ./src/PublicPoolsMapping.ts
 
@@ -124,9 +120,9 @@ dataSources:
     name: DonationPools
     network: kovan
     source:
-      address: "0x12F7953e925DDae5d799004614863740e217F5F9"
+      address: "0x41ce3B221939a0a9D09B766Fb8ea72e2dd0B3Ed0"
       abi: DonationPools
-      startBlock: 24166793
+      startBlock: 24212893
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4

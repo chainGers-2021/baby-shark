@@ -3,7 +3,6 @@ import {
   OwnershipTransferred,
   newDeposit,
   newPoolCreated,
-  newTokenAdded,
   newWithdrawal,
   totalPoolDeposit,
   totalPoolScaledDeposit,
@@ -16,7 +15,7 @@ import { Pool, Symbol, User, UserPool } from "../generated/schema";
 export function handleOwnershipTransferred(event: OwnershipTransferred): void {}
 
 export function handlenewDeposit(event: newDeposit): void {
-  let pool = Pool.load(event.params._poolName.toHexString());
+  let pool = Pool.load(event.params._poolName);
 
   const ID = event.params._sender
     .toHexString()
@@ -43,7 +42,7 @@ export function handlenewDeposit(event: newDeposit): void {
 }
 
 export function handlenewPoolCreated(event: newPoolCreated): void {
-  let pool = new Pool(event.params._poolName.toHexString());
+  let pool = new Pool(event.params._poolName);
   pool.owner = event.params._owner.toHexString();
   pool.symbol = event.params.symbol;
   pool.totalDeposit = BigInt.fromI32(0);
@@ -55,10 +54,8 @@ export function handlenewPoolCreated(event: newPoolCreated): void {
   pool.save();
 }
 
-export function handlenewTokenAdded(event: newTokenAdded): void {}
-
 export function handlenewWithdrawal(event: newWithdrawal): void {
-  let pool = Pool.load(event.params._poolName.toHexString());
+  let pool = Pool.load(event.params._poolName);
   const ID = event.params._sender
     .toHexString()
     .concat("-")
@@ -81,7 +78,7 @@ export function handletotalPoolDeposit(event: totalPoolDeposit): void {}
 export function handletotalPoolScaledDeposit(
   event: totalPoolScaledDeposit
 ): void {
-  let pool = Pool.load(event.params._poolName.toHexString());
+  let pool = Pool.load(event.params._poolName);
   pool.totalDeposit = event.params._amount;
 
   let history = pool.history;
@@ -99,7 +96,7 @@ export function handletotalUserScaledDeposit(
   event: totalUserScaledDeposit
 ): void {
   let user = User.load(event.params._sender.toHexString());
-  let pool = Pool.load(event.params._poolName.toHexString());
+  let pool = Pool.load(event.params._poolName);
 
   //checks if the user exists
   if (!user) {
@@ -121,20 +118,11 @@ export function handletotalUserScaledDeposit(
     user.pools = pools;
     user.eligibleForNFT = true;
     user.save();
-  }
 
-  if (event.params._amount.equals(BigInt.fromI32(0))) {
-    let index = user.pools.indexOf(pool.id);
-
-    let pools = user.pools;
-    pools.splice(index, 1);
-    user.pools = pools;
-
-    if (pools.length === 0) {
-      user.eligibleForNFT = false;
-    }
-
-    user.save();
+    let users = pool.users;
+    if (users.indexOf(user.id) === -1) users.push(user.id);
+    pool.users = users;
+    pool.save();
   }
 
   // loads a userpool entity for user
@@ -167,9 +155,9 @@ export function handletotalUserScaledDeposit(
 
 export function handleverified(event: verified): void {}
 
-const createKey = (user: Address, pool: Bytes): string => {
+const createKey = (user: Address, pool: string): string => {
   return user
     .toHexString()
     .concat("-")
-    .concat(pool.toHexString());
+    .concat(pool);
 };

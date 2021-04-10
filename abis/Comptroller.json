@@ -60,7 +60,6 @@
     "inputs": [
       { "internalType": "string", "name": "_poolName", "type": "string" },
       { "internalType": "uint256", "name": "_amount", "type": "uint256" },
-      { "internalType": "string", "name": "_tokenSymbol", "type": "string" },
       { "internalType": "bool", "name": "_typePrivate", "type": "bool" }
     ],
     "name": "depositERC20",
@@ -72,6 +71,15 @@
     "inputs": [],
     "name": "donationPoolsContract",
     "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "string", "name": "_symbol", "type": "string" }
+    ],
+    "name": "getReserveIncome",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
   },

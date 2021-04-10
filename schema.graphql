@@ -10,7 +10,7 @@ type Pool @entity {
   owner: String!
   symbol: String!
   totalDeposit: BigInt!
-  users: [User!]!
+  users: [String!]!
 
   history: [BigInt!]!
   timestamps: [BigInt!]!
