@@ -34,3 +34,8 @@ type Symbol @entity {
   totalDeposit: BigInt!
   eligibleForNFT: Boolean!
 }
+
+type Token @entity {
+  id: ID!
+  address: String!
+}
