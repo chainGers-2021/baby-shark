@@ -15,6 +15,7 @@ type Pool @entity {
   history: [BigInt!]!
   timestamps: [BigInt!]!
   privatePool: Boolean!
+  targetPrice: BigInt!
 }
 
 type UserPool @entity {

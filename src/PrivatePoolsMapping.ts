@@ -53,6 +53,7 @@ export function handlenewPoolCreated(event: newPoolCreated): void {
   pool.history = [BigInt.fromI32(0)];
   pool.timestamps = [event.params._timestamp];
   pool.privatePool = true;
+  pool.targetPrice = event.params._targetPrice;
 
   pool.save();
 }
