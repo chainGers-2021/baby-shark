@@ -1,4 +1,4 @@
-# Baby-shark Subgraph 
+# Baby-Shark Subgraph 
 <p align = center>
 <img src= "./images/built-with.png">
 <br>
